@@ -1,26 +1,29 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const axios = require('axios');
 const cors = require('cors');
+const { getBoardData } = require('./trelloApiHandler'); // Importa a função do módulo trelloApiHandler
 
-// Inicializa variáveis de ambiente
 dotenv.config();
 
-// Cria a instância do express (o servidor web)
 const app = express();
-
-// Habilita o CORS para que seu site WordPress possa fazer requisições para este servidor
 app.use(cors());
 
-// Define uma rota básica para testar se o servidor está funcionando
 app.get('/', (req, res) => {
   res.send('Servidor do Power-Up Trello funcionando!');
 });
 
-// Insira suas rotas e lógica da API aqui
-// Exemplo: app.get('/data', (req, res) => { /* Sua lógica de API */ });
+// Nova rota para buscar dados do quadro
+app.get('/board/:boardId', async (req, res) => {
+  try {
+    const boardId = req.params.boardId; // Obtém o ID do quadro a partir dos parâmetros da URL
+    const data = await getBoardData(boardId); // Chama a função para obter os dados do quadro
+    res.json(data); // Envia os dados do quadro como resposta
+  } catch (error) {
+    console.error('Erro ao buscar dados do quadro:', error);
+    res.status(500).send('Erro ao buscar dados do quadro');
+  }
+});
 
-// Define a porta e inicia o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
