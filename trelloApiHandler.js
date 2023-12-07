@@ -11,8 +11,8 @@ const getBoardData = async (boardId) => {
     const response = await axios.get(boardUrl);
     return response.data; // Retorna os dados do quadro
   } catch (error) {
-    console.error('Erro ao buscar dados do quadro:', error);
-    throw error; // Propaga o erro
+    console.error('Erro ao buscar dados do quadro:', error.response ? error.response.data : error.message);
+    throw error;
   }
 };
 
